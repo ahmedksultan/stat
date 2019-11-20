@@ -15,9 +15,17 @@ int main() {
     printf("Size of file (in bytes): %ld B\n\n", info.st_size);
     printf("Last accessed: %s", ctime(&info.st_atime));
     printf("Last modified: %s\n", ctime(&info.st_mtime));
-    // for some reason, this isn't working EXACTLY as how i intended
-    int chmod = info.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
-    printf("permissions: %d\n", chmod);
+    // Kazi helped me with this!
+    char modearray[] = "rwxrwxrwx";
+    int itr;
+    for (itr = 1; itr <= 9; itr++) {
+        if (!(info.st_mode & (1 << (9 - itr)))) {
+            modearray[itr - 1] = '-';
+        }
+    }
+
+    printf("permissions (readable): %s\n", modearray);
+    printf("permissions (octal): %o\n", info.st_mode);
 
     printf("other byte representations:\n%f GB\n%f MB\n%f KB\n%ld B\n", info.st_size / 1000000000.0, info.st_size / 1000000.0, info.st_size / 1000.0, info.st_size);
 
